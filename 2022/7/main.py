@@ -2,7 +2,7 @@
     The input is processed line by line in the fallowing way:
 
     * Collect the output of the command.
-    * If is a cd command.
+    * If it's a cd command.
         update the current directory variable and added it
         to the file_system.
     * If is a ls command.
@@ -58,8 +58,7 @@ class Directory(Item):
     def size(self):
         '''
         Iterates over all itens this directory have and add it's size.
-        For performance, it only does that once, because it's size is stored in 
-        `self.__size`, which is returned after `self.has_size_calculated` is set to True.
+        For performance, it only does that once.
         '''
         if not self.has_size_calculated:
             self.has_size_calculated = True
@@ -68,9 +67,8 @@ class Directory(Item):
             for item in self.itens:
                 size += item.size
             self.__size = size
-            return size
-        else:
-            return self.__size
+        
+        return self.__size
 
     @property
     def full_path(self):
@@ -83,9 +81,9 @@ class Directory(Item):
             return self.parent.full_path + "/" + self.name
 
 ### Part 1 ###
-file_system = {} # Dictionary with all directorys.
+file_system = {} # Dictionary with all directories.
 
-already_ls = [] # Used to check is the ls command has already been run in the current directory. 
+already_ls = [] # Used to check if the ls command has already been run in the current directory. 
 skip_ls = False
 
 directory_history = [] # Directory history of the cd commands.
@@ -141,8 +139,8 @@ while count < num_lines:
         ###
 
         ###
-        # Collects all itens in that directory and places them
-        # in the same. 
+        # Collects all itens output itens and places them
+        # in the current directory.
         itens = [] 
         for item in command_output:
             if item[:3] == "dir":

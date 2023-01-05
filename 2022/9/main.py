@@ -13,7 +13,7 @@ for id, row in enumerate(data_temp):
 ###
 
 class Rope:
-    # Direction name to the corresponding movement vetor.
+    # Direction name to the corresponding movement vector.
     direction_2_vector = {"R": [1, 0], "U": [0, 1], "L": [-1, 0], "D": [0, -1]}
     for key, value in direction_2_vector.items():
         direction_2_vector[key] = np.array(value, dtype=int)
@@ -75,7 +75,7 @@ class Rope:
 
         Therefore, if the `distance` is grater than 1, the knot position needs to be updated. Again, the update
         movement the knot needs to do (which I call `knot_move`) can be calculated from 'delta_pos', because this vector with normalized components
-        is the exactly the movement the knot needs to do.
+        is exactly the movement the knot needs to do.
 
         Parameters:
         -----------
