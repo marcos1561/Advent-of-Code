@@ -65,7 +65,7 @@ signal_strength_sum = 0
 for cycle in range(20, 221, 40):
     signal_strength_sum += cycle * register_values[cycle]
 
-print("Signal sum", signal_strength_sum)
+print("Signal sum:", signal_strength_sum)
 ###
 
 print()
