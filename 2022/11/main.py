@@ -24,11 +24,44 @@ import AdventOfCode.aoc as aoc
 
 class Monkey:
     def __init__(self, id, items: list[int], operation, test_num: int, test_true_id: int, test_false_id: int, monkey_list: list) -> None:
+        '''
+        Creates a monkey with all information about it's operation and test to passa the item.
+        
+        The variable `items_remainders` is used in the second part.
+        It has the same number of elements as `items` and the ith element it's
+        a list containing the remainder of the ith element in `item` for the number
+        used in the test for each monkey.
+
+        Parameters:
+        -----------
+            id: int
+                The number of the monkey.
+
+            items: list[int]
+                Every worry level item the monkey is holding in the moment.
+            
+            operation: function
+                Function whose input is the old item and the output is the item, 
+                according to the input.
+            
+            test_num: int
+                Number that the item must be divisible to pass in the monkey test.
+            
+            test_true_id: int
+                Monkey id to which the item will be passes if the test evaluates to true. 
+
+            test_false_id: int
+                Monkey id to which the item will be passes if the test evaluates to false.
+
+            monkey_list: list[Monkey]
+                List with all the monkeys. The ith item in the list is the monkey
+                whose id is i.
+        '''
         self.id = id
         
         self.items = items
         
-        # Used for part 2
+        # Used for part 2 ##
         self.items_remainders = []
 
         self.operation = operation
@@ -42,19 +75,32 @@ class Monkey:
         self.num_process_items = 0
 
     def process_items(self):
+        '''
+        Process all the itens that the monkey is holding in the moment,
+        according to the rules stated in the puzzle. Also keep track of how many
+        itens were processes in the variable `self.num_process_items`.
+        '''
+        # How many items were processed
         self.num_process_items += len(self.items)
+        
         for item in self.items:
             item = self.operation(item)
             item = int(item / 3)
 
+            # Giving the item to another monkey
             if item % self.test_num == 0:
                 self.monkey_list[self.test_true_id].items.append(item)
             else:
                 self.monkey_list[self.test_false_id].items.append(item)
 
+        # Reset the itens, because all of them were given to another monkey.
         self.items = []
 
     def process_items_part_2(self):
+        '''
+        
+        '''
+
         self.num_process_items += len(self.items_remainders)
         for item in self.items_remainders:
             new_item = []
@@ -70,18 +116,34 @@ class Monkey:
 
 class MonkeyList:
     def __init__(self) -> None:
+        '''
+        Represent a list of monkeys with some useful methods related to the puzzle.    
+        '''
+        # List with all the monkeys
         self.monkeys = []
+
+        # List with all the numbers used in the test to decide which monkey to give the item.
+        # The ith element in the list is the number used in the monkey test whose id is i.
         self.test_num_list = []
 
     def add_monkey(self, monkey: Monkey):
         self.monkeys.append(monkey)
     
     def reset_num_process_items(self):
+        '''
+        Reset the count of the items processed by the monkeys. This is used
+        to reset the result of part 1.
+        '''
         monkey: Monkey
         for monkey in self.monkeys:
             monkey.num_process_items = 0
 
     def create_items_remainders(self):
+        '''
+        For each item of each monkey is created the remainder for each
+        number used in the tests.
+        '''
+
         monkey: Monkey
         for monkey in self.monkeys:
             items_remainders = []
