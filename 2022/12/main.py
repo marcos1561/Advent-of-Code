@@ -36,31 +36,33 @@ class HeightMapGraph:
 
     def __init__(self, height_map: np.ndarray) -> None:
         self.heigh_map = height_map
-    
-        self.order_nodes = {}
-        
-        self.marked = np.ones(height_map.shape, dtype=int)
-        self.marked[1:-1,1:-1] = 0
 
     def bfs(self, start_node: tuple):
+        order_nodes = {}
+        
+        marked = np.ones(height_map.shape, dtype=int)
+        marked[1:-1,1:-1] = 0
+
         queue = [start_node]
 
         order = 0
         while len(queue) > 0:
-            self.order_nodes[order] = queue
+            order_nodes[order] = queue
             for node in queue:
-                self.marked[node[0], node[1]] = 1
+                marked[node[0], node[1]] = 1
 
             new_queue = []
             for node in queue:    
-                for new_node in self.get_valid_neighbors(node):
+                for new_node in self.get_valid_neighbors(node, marked):
                     if new_node not in new_queue:
                         new_queue.append(new_node)
 
             queue = new_queue
             order += 1
 
-    def get_valid_neighbors(self, node: tuple):
+        return order_nodes
+
+    def get_valid_neighbors(self, node: tuple, marked: np.ndarray):
         valid_neighbors = []
         for direction in self.neighbors_directions:
             neighbor_node = np.array(node) + direction
@@ -68,7 +70,7 @@ class HeightMapGraph:
             
             delta_height =  neighbor_height - self.heigh_map[node[0], node[1]]
 
-            if delta_height < 2 and not self.marked[neighbor_node[0], neighbor_node[1]]:
+            if delta_height < 2 and not marked[neighbor_node[0], neighbor_node[1]]:
                 valid_neighbors.append(tuple(neighbor_node))
         
         return valid_neighbors
@@ -83,14 +85,14 @@ class HeightMapGraph:
                 print(node, end=", ")
             print()
 
-    def get_node_order(self, node):
-        for order, nodes in graph.order_nodes.items():
+    def get_node_order(self, order_nodes:dict[list], node:tuple):
+        for order, nodes in order_nodes.items():
             if node in nodes:
                 return order
 
 graph = HeightMapGraph(height_map)
-graph.bfs(init_pos)
-print("Number of fewest steps:", graph.get_node_order(end_pos))
+order_nodes = graph.bfs(init_pos)
+print("Number of fewest steps:", graph.get_node_order(order_nodes, end_pos))
 ###
 
 print()
@@ -98,4 +100,17 @@ print()
 ### Part 2 ###
 print("="*5, "Part 2", "="*5)
 
+possible_starts = np.where(height_map == 0)
+possible_starts = np.array(possible_starts).transpose()
+
+graph = HeightMapGraph(height_map)
+steps_list = []
+for start in possible_starts:
+    order_nodes = graph.bfs(tuple(start))
+    steps = graph.get_node_order(order_nodes, end_pos)
+    
+    if steps != None:
+        steps_list.append(steps)
+
+print("Minimal steps: ", min(steps_list))
 ###
