@@ -1,4 +1,4 @@
-def get_input(input_path: str, to_strip=True): 
+def get_input(input_path: str, to_strip=True) -> list[str]: 
     '''
     Read the input and return a list which i-th item is the
     i-th row in the input.
